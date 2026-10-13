@@ -1,0 +1,846 @@
+<title>AS23859 Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Literata:ital,opsz,wght@0,18..144,400;0,18..144,500;0,18..144,600;1,18..144,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10192A;
+    --paper:#FAFBF8;
+    --surface:#FFFFFF;
+    --surface-2:#EEF1EC;
+    --border:#DCE1D8;
+    --text-muted:#57626B;
+    --accent:#3452C4;
+    --accent-soft:#E4E9FA;
+    --accent-2:#C2792B;
+    --accent-2-soft:#F5E7D2;
+    --good:#1F8F5B;
+    --good-soft:#DFF1E7;
+    --warn:#9C6B18;
+    --warn-soft:#F3E7CE;
+    --info:#2F6FA6;
+    --info-soft:#DFEAF5;
+    --hue1:#2E8BC9; --hue1-soft:#DFF0FA;
+    --hue2:#4653C7; --hue2-soft:#E4E6FA;
+    --hue3:#C13E74; --hue3-soft:#FBE3EC;
+    --hue4:#D0812C; --hue4-soft:#FBEBD8;
+    --shadow: 0 1px 2px rgba(16,25,42,0.06), 0 10px 28px -14px rgba(16,25,42,0.22);
+    padding-top: env(safe-area-inset-top,0px);
+    padding-bottom: env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#EDEFF2;
+      --paper:#0E1310;
+      --surface:#161C18;
+      --surface-2:#1D2420;
+      --border:#2B342E;
+      --text-muted:#9AA6A0;
+      --accent:#8DA0F2;
+      --accent-soft:#212B4A;
+      --accent-2:#E3A868;
+      --accent-2-soft:#3B2D18;
+      --good:#5FCB93;
+      --good-soft:#173226;
+      --warn:#E3B45E;
+      --warn-soft:#3A2E13;
+      --info:#7FB2E6;
+      --info-soft:#182B3B;
+      --hue1:#6EB6E8; --hue1-soft:#122A38;
+      --hue2:#8C97E8; --hue2-soft:#1E2140;
+      --hue3:#E489AC; --hue3-soft:#3A1E2A;
+      --hue4:#E8A868; --hue4-soft:#3A2A13;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 28px -14px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#EDEFF2;
+    --paper:#0E1310;
+    --surface:#161C18;
+    --surface-2:#1D2420;
+    --border:#2B342E;
+    --text-muted:#9AA6A0;
+    --accent:#8DA0F2;
+    --accent-soft:#212B4A;
+    --accent-2:#E3A868;
+    --accent-2-soft:#3B2D18;
+    --good:#5FCB93;
+    --good-soft:#173226;
+    --warn:#E3B45E;
+    --warn-soft:#3A2E13;
+    --info:#7FB2E6;
+    --info-soft:#182B3B;
+    --hue1:#6EB6E8; --hue1-soft:#122A38;
+    --hue2:#8C97E8; --hue2-soft:#1E2140;
+    --hue3:#E489AC; --hue3-soft:#3A1E2A;
+    --hue4:#E8A868; --hue4-soft:#3A2A13;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 28px -14px rgba(0,0,0,0.5);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Literata', Georgia, 'Times New Roman', serif;
+    font-size:16px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;}
+  [hidden]{display:none!important;}
+
+  .wrap{
+    max-width:880px;
+    margin:0 auto;
+    padding-inline:20px;
+    padding-block:40px 80px;
+    display:flex;
+    flex-direction:column;
+    gap:56px;
+  }
+
+  h1,h2,h3,.pill,.chip,.nav-list a,.kicker,.node-name,.node-as,button{
+    font-family:'Outfit', 'Segoe UI', sans-serif;
+  }
+  h1,h2,h3{text-wrap:balance; margin:0; color:var(--ink);}
+
+  .kicker{
+    font-size:0.78rem;
+    font-weight:600;
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead{display:flex; flex-direction:column; gap:18px;}
+  .masthead h1{font-size:clamp(2rem, 5vw, 2.9rem); font-weight:800; line-height:1.08;}
+  .masthead .dek{
+    font-size:1.1rem;
+    color:var(--text-muted);
+    max-width:62ch;
+  }
+  .masthead .dek b{color:var(--ink); font-weight:600;}
+  .meta-row{
+    display:flex; flex-wrap:wrap; gap:10px;
+  }
+  .meta-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.8rem;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:7px;
+    padding:5px 10px;
+    color:var(--text-muted);
+  }
+  .meta-tag b{color:var(--ink); font-weight:600;}
+
+  /* ---------- agenda / toc ---------- */
+  .agenda{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:22px 22px 10px;
+    box-shadow:var(--shadow);
+  }
+  .agenda h2{font-size:1.05rem; font-weight:700; margin-bottom:14px;}
+  .agenda-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column;}
+  .agenda-list li{
+    border-top:1px solid var(--border);
+  }
+  .agenda-list li:first-child{border-top:none;}
+  .agenda-list a{
+    display:flex; align-items:center; gap:14px;
+    padding:11px 2px;
+    text-decoration:none;
+    color:var(--ink);
+    font-weight:500;
+    font-size:0.98rem;
+  }
+  .agenda-list a:hover .num{filter:brightness(1.08);}
+  .num{
+    flex:none;
+    width:34px; height:34px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:0.82rem;
+    color:#fff;
+  }
+  .agenda-list .sub{color:var(--text-muted); font-weight:400; font-size:0.88rem; margin-left:auto; padding-left:12px; text-align:right; font-family:'IBM Plex Mono',monospace;}
+
+  /* ---------- sections ---------- */
+  section.lesson{display:flex; flex-direction:column; gap:16px; scroll-margin-top:18px;}
+  .section-head{display:flex; align-items:flex-start; gap:14px;}
+  .section-head .num{width:40px; height:40px; font-size:0.95rem; flex:none;}
+  .section-head h2{font-size:1.5rem; font-weight:700; padding-top:4px;}
+  .lesson-body{padding-left:54px; display:flex; flex-direction:column; gap:16px;}
+  .lesson-body p{max-width:66ch; margin:0;}
+  .lesson-body p.lead{font-size:1.02rem;}
+  @media (max-width:600px){
+    .lesson-body{padding-left:0;}
+    /* At narrow widths the agenda's right-aligned .sub description has nowhere
+       to shrink to (flex items default to min-width:auto) and gets clipped
+       against the viewport edge -- confirmed by an actual 400px screenshot,
+       not assumed. Drop it to its own line instead of fighting for the row. */
+    .agenda-list a{flex-wrap:wrap; row-gap:2px;}
+    .agenda-list .sub{flex:1 0 100%; margin-left:48px; padding-left:0; text-align:left;}
+  }
+
+  code, .mono{font-family:'IBM Plex Mono', monospace;}
+  .as-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    background:var(--accent-soft);
+    color:var(--accent);
+    padding:1px 6px;
+    border-radius:5px;
+    font-size:0.92em;
+  }
+
+  /* ---------- worked example callouts ---------- */
+  .worked{
+    border:1px solid var(--border);
+    border-left:4px solid var(--accent-2);
+    background:var(--surface);
+    border-radius:0 12px 12px 0;
+    padding:16px 18px;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .worked .label{
+    font-family:'Outfit',sans-serif;
+    font-weight:700;
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--accent-2);
+  }
+  .worked p{max-width:none;}
+  .worked.alt{border-left-color:var(--accent);}
+  .worked.alt .label{color:var(--accent);}
+
+  /* ---------- terminal / code panels ---------- */
+  .term{
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    background:var(--surface-2);
+  }
+  .term-bar{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.74rem;
+    color:var(--text-muted);
+    padding:7px 14px;
+    border-bottom:1px solid var(--border);
+    display:flex; justify-content:space-between; gap:10px;
+  }
+  .term pre{
+    margin:0;
+    padding:14px 16px;
+    overflow-x:auto;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem;
+    line-height:1.6;
+    color:var(--ink);
+  }
+  .term pre .c{color:var(--text-muted);}
+  .term pre .k{color:var(--good);}
+  .term pre .v{color:var(--info);}
+  .term pre .w{color:var(--warn);}
+
+  /* ---------- topology diagram ---------- */
+  .diagram{
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:var(--surface);
+    padding:22px;
+    overflow-x:auto;
+  }
+  .diagram-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:640px;
+  }
+  .node{
+    flex:1;
+    border-radius:12px;
+    padding:14px 16px;
+    background:var(--surface);
+    box-shadow:var(--shadow);
+    display:flex; flex-direction:column; gap:3px;
+    position:relative;
+  }
+  .node .role{font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:700;}
+  .node .node-as{font-size:1.05rem; font-weight:700;}
+  .node .node-name{font-size:0.84rem; color:var(--text-muted); font-weight:500;}
+  .node.origin{border:2px solid var(--hue1); }
+  .node.origin .role{color:var(--hue1);}
+  .node.transit{border:2px solid var(--hue2);}
+  .node.transit .role{color:var(--hue2);}
+  .node.rest{border:2px dashed var(--border); box-shadow:none;}
+  .node.rest .role{color:var(--text-muted);}
+  .connector{flex:none; display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--text-muted);}
+  .connector svg{display:block;}
+  .connector .clabel{font-family:'IBM Plex Mono',monospace; font-size:0.68rem;}
+  .diagram-cap{font-size:0.85rem; color:var(--text-muted); margin-top:14px; max-width:70ch;}
+
+  .paths-list{
+    display:flex; flex-direction:column; gap:0;
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .paths-list .prow{
+    display:flex; gap:14px; align-items:baseline;
+    padding:9px 14px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.84rem;
+    border-top:1px solid var(--border);
+    background:var(--surface);
+  }
+  .paths-list .prow:first-child{border-top:none;}
+  .paths-list .prow .loc{color:var(--text-muted); flex:none; width:130px; font-family:'Outfit',sans-serif; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em;}
+  .paths-list .prow .path .hop{padding:1px 4px;border-radius:4px;}
+  .paths-list .prow .path .origin-hop{background:var(--hue1-soft); color:var(--hue1); font-weight:700;}
+  .paths-list .prow .path .up-hop{background:var(--hue2-soft); color:var(--hue2); font-weight:600;}
+
+  /* ---------- tables ---------- */
+  .tbl-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px;}
+  table{width:100%; border-collapse:collapse; font-size:0.92rem; min-width:480px;}
+  th,td{text-align:left; padding:10px 14px; border-top:1px solid var(--border);}
+  thead th{
+    font-family:'Outfit',sans-serif; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--text-muted); border-top:none; background:var(--surface-2);
+  }
+  tbody tr{background:var(--surface);}
+  td.mono, th.mono{font-family:'IBM Plex Mono',monospace;}
+
+  .chip{
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:0.74rem; font-weight:600;
+    padding:3px 9px; border-radius:99px;
+  }
+  .chip.good{background:var(--good-soft); color:var(--good);}
+  .chip.warn{background:var(--warn-soft); color:var(--warn);}
+  .chip.info{background:var(--info-soft); color:var(--info);}
+  .chip.mute{background:var(--surface-2); color:var(--text-muted); border:1px solid var(--border);}
+
+  /* ---------- glossary ---------- */
+  .glossary{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px;}
+  .gterm{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px;}
+  .gterm dt{font-family:'Outfit',sans-serif; font-weight:700; font-size:0.92rem; margin-bottom:4px;}
+  .gterm dd{margin:0; font-size:0.86rem; color:var(--text-muted); line-height:1.5;}
+
+  /* ---------- myth / reality cards ---------- */
+  .myths{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px;}
+  .myth-card{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; gap:8px;}
+  .myth-card p{margin:0; max-width:none; font-size:0.9rem; line-height:1.5;}
+  .myth-card .myth b{color:var(--warn);}
+  .myth-card .reality{color:var(--text-muted);}
+  .myth-card .reality b{color:var(--good);}
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top:1px solid var(--border);
+    padding-top:22px;
+    display:flex; flex-direction:column; gap:6px;
+    font-size:0.82rem; color:var(--text-muted);
+  }
+  footer a{color:var(--accent);}
+
+  ul.plain{margin:0; padding-left:1.2em; display:flex; flex-direction:column; gap:6px; max-width:66ch;}
+  ul.plain li{max-width:none;}
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="kicker">Networking 101 &middot; worked example</p>
+    <h1>AS23859 Field Guide</h1>
+    <p class="dek">Border Gateway Protocol, taught through one real network: <b>AS23859</b>, the University of New South Wales. Every concept below is illustrated with live routing data and the exact <code class="mono">whois</code> / API commands used to pull it &mdash; run them yourself.</p>
+    <div class="meta-row">
+      <span class="meta-tag"><b>AS23859</b> &middot; UNSW-AS-AP</span>
+      <span class="meta-tag">Upstream: <b>AS7575</b> AARNet</span>
+      <span class="meta-tag">Registry: <b>APNIC</b></span>
+      <span class="meta-tag">Snapshot: <b>2026-10-09</b></span>
+    </div>
+  </header>
+
+  <nav class="agenda" aria-label="Table of contents">
+    <h2>Today's route</h2>
+    <ol class="agenda-list">
+      <li><a href="#networks"><span class="num" style="background:var(--hue1)">01</span>The Internet as a network of networks<span class="sub">why BGP exists</span></a></li>
+      <li><a href="#case-file"><span class="num" style="background:var(--hue2)">02</span>Case file: AS23859<span class="sub">the running example</span></a></li>
+      <li><a href="#ebgp-ibgp"><span class="num" style="background:var(--hue3)">03</span>eBGP, iBGP &amp; multi-homing<span class="sub">why UNSW has one upstream</span></a></li>
+      <li><a href="#busy-as"><span class="num" style="background:var(--hue4)">04</span>Case study: AS7575<span class="sub">a busy, multi-homed AS</span></a></li>
+      <li><a href="#reading-paths"><span class="num" style="background:var(--hue1)">05</span>Reading an AS path<span class="sub">live paths from RIS</span></a></li>
+      <li><a href="#rib"><span class="num" style="background:var(--hue2)">06</span>What's in a RIB<span class="sub">before selection happens</span></a></li>
+      <li><a href="#table-size"><span class="num" style="background:var(--hue3)">07</span>How big is the table?<span class="sub">real numbers, real memory</span></a></li>
+      <li><a href="#best-path"><span class="num" style="background:var(--hue4)">08</span>How a route wins<span class="sub">best-path selection</span></a></li>
+      <li><a href="#communities"><span class="num" style="background:var(--hue1)">09</span>Communities<span class="sub">tagging routes with meaning</span></a></li>
+      <li><a href="#irr"><span class="num" style="background:var(--hue2)">10</span>The routing registry (IRR)<span class="sub">RPSL, live whois</span></a></li>
+      <li><a href="#rpki"><span class="num" style="background:var(--hue3)">11</span>RPKI &amp; origin validation<span class="sub">a real missing ROA</span></a></li>
+      <li><a href="#failures"><span class="num" style="background:var(--hue4)">12</span>When BGP goes wrong<span class="sub">a real hijack, and a small one</span></a></li>
+      <li><a href="#misconceptions"><span class="num" style="background:var(--hue1)">13</span>Common misconceptions<span class="sub">where newcomers get tripped up</span></a></li>
+      <li><a href="#toolkit"><span class="num" style="background:var(--hue2)">14</span>Student toolkit<span class="sub">queries to run yourself</span></a></li>
+      <li><a href="#glossary"><span class="num" style="background:var(--hue3)">15</span>Glossary &amp; takeaways<span class="sub">key terms</span></a></li>
+    </ol>
+  </nav>
+
+  <!-- 01 -->
+  <section class="lesson" id="networks">
+    <div class="section-head"><span class="num" style="background:var(--hue1)">01</span><h2>The Internet as a network of networks</h2></div>
+    <div class="lesson-body">
+      <p class="lead">No single company owns the Internet. It's roughly 75,000 independently-operated networks &mdash; universities, ISPs, cloud providers, mobile carriers &mdash; each called an <b>Autonomous System (AS)</b>, identified by a number. <b>BGP</b> (Border Gateway Protocol) is the language these networks use to tell each other <i>"here's how to reach the addresses I'm responsible for."</i></p>
+      <p>Think of it like national postal services. Your local post office doesn't know the specific street in Tokyo &mdash; it just knows which international carrier to hand a Japan-bound letter to. That carrier knows the next hop, and so on. No single office holds the whole map; each just knows its <i>next</i> hop and passes along what it has learned. BGP is that same handoff, repeated by routers, roughly 950,000 times a second across the global routing table.</p>
+      <div class="worked">
+        <span class="label">Worked example</span>
+        <p>AS23859 is one of those ~75,000 networks. It doesn't need to know how to reach every address on Earth &mdash; it only needs to know one thing: <i>send everything that isn't mine to AS7575</i>. That single fact is the entire routing table you'll see in section 03.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="lesson" id="case-file">
+    <div class="section-head"><span class="num" style="background:var(--hue2)">02</span><h2>Case file: AS23859</h2></div>
+    <div class="lesson-body">
+      <p class="lead">Every AS is registered with a <b>Regional Internet Registry</b> (RIR) &mdash; APNIC for the Asia-Pacific region &mdash; which hands out AS numbers and IP blocks the way a national authority hands out postcodes.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Holder</td><td>UNSW-AS-AP &mdash; University of New South Wales</td></tr>
+            <tr><td class="mono">AS number</td><td class="mono">23859</td></tr>
+            <tr><td>Registry</td><td>APNIC (Australia)</td></tr>
+            <tr><td>Announced prefixes</td><td>4 (no IPv6 announced today)</td></tr>
+            <tr><td>Upstream</td><td class="mono">AS7575</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th class="mono">Prefix</th><th>Size</th><th>RPKI</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">131.236.0.0/16</td><td>65,536 addresses</td><td><span class="chip good">valid</span></td></tr>
+            <tr><td class="mono">129.94.0.0/16</td><td>65,536 addresses</td><td><span class="chip good">valid</span></td></tr>
+            <tr><td class="mono">203.10.48.0/24</td><td>256 addresses</td><td><span class="chip warn">no ROA</span></td></tr>
+            <tr><td class="mono">149.171.0.0/16</td><td>65,536 addresses</td><td><span class="chip good">valid</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><b>Why this is a good teaching example:</b> it's small and simple enough to hold in your head &mdash; one AS, one upstream, a handful of prefixes &mdash; but it still contains a real, currently-open RPKI gap and a stale registry object (sections 11 and 12). Real, messy, low-stakes.</p>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="lesson" id="ebgp-ibgp">
+    <div class="section-head"><span class="num" style="background:var(--hue3)">03</span><h2>eBGP, iBGP &amp; multi-homing</h2></div>
+    <div class="lesson-body">
+      <p class="lead">BGP runs in two modes. <b>eBGP</b> (external) speaks <i>between</i> different ASes &mdash; that's the language of the global routing table. <b>iBGP</b> (internal) carries those same routes <i>between routers inside one AS</i>, so every router in a large network agrees on the same view without each one needing its own eBGP session to the outside world.</p>
+      <p>A network with only one eBGP neighbor is <b>single-homed</b>: if that one link fails, it loses its only path to the rest of the Internet. A <b>multi-homed</b> network has two or more upstreams and can fail over between them.</p>
+      <div class="diagram">
+        <div class="diagram-row">
+          <div class="node origin"><span class="role">Origin &middot; single-homed</span><span class="node-as">AS23859</span><span class="node-name">UNSW</span></div>
+          <div class="connector">
+            <svg width="46" height="16" viewBox="0 0 46 16"><line x1="0" y1="8" x2="38" y2="8" stroke="currentColor" stroke-width="2"/><polygon points="38,3 46,8 38,13" fill="currentColor"/></svg>
+            <span class="clabel">eBGP</span>
+          </div>
+          <div class="node transit"><span class="role">Sole upstream</span><span class="node-as">AS7575</span><span class="node-name">AARNet</span></div>
+          <div class="connector">
+            <svg width="46" height="16" viewBox="0 0 46 16"><line x1="0" y1="8" x2="38" y2="8" stroke="currentColor" stroke-width="2"/><polygon points="38,3 46,8 38,13" fill="currentColor"/></svg>
+            <span class="clabel">eBGP &times;275</span>
+          </div>
+          <div class="node rest"><span class="role">275 peers/upstreams</span><span class="node-as">rest of Internet</span><span class="node-name">global table</span></div>
+        </div>
+        <p class="diagram-cap">That AS23859&ndash;AS7575 edge is seen by 275 of RIS's route-collector peers &mdash; a measure of how well-attested the link is, not of how many neighbors AARNet has. UNSW itself has exactly one neighbor. AARNet has hundreds &mdash; section 04 is the case study.</p>
+      </div>
+      <p>Every diagram and table in section 04 is about that asymmetry: what "multi-homed" actually looks like once you zoom out one hop from a stub network to a real backbone.</p>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="lesson" id="busy-as">
+    <div class="section-head"><span class="num" style="background:var(--hue4)">04</span><h2>Case study: AS7575, a busy multi-homed network</h2></div>
+    <div class="lesson-body">
+      <p class="lead">Zoom out one hop from section 03 and the picture changes completely. AARNet isn't a stub &mdash; it's a national research backbone with providers of its own, peers it exchanges traffic with as equals, and customers (UNSW among them) that it provides transit for. Two independent measurement methods agree on the shape, even if the exact counts differ &mdash; itself a useful lesson: "how many neighbors does X have" depends on how you count.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Metric</th><th class="mono">AS23859 &middot; UNSW</th><th class="mono">AS7575 &middot; AARNet</th></tr></thead>
+          <tbody>
+            <tr><td>Role</td><td>Stub / customer</td><td>Multi-homed backbone</td></tr>
+            <tr><td>Providers</td><td>1</td><td>6</td></tr>
+            <tr><td>Peers</td><td>0</td><td>425</td></tr>
+            <tr><td>Customers</td><td>0</td><td>112</td></tr>
+            <tr><td>Total neighbors (CAIDA)</td><td>1</td><td>543</td></tr>
+            <tr><td>Total neighbors (RIPEstat, path-based)</td><td>1</td><td>530 unique + 12 uncertain</td></tr>
+            <tr><td>PeeringDB footprint</td><td>no record</td><td>29 IXPs, 11 facilities, 100-200Gbps</td></tr>
+            <tr><td>Customer cone</td><td>1 AS, 4 prefixes</td><td>272 ASes, 3,244 prefixes</td></tr>
+            <tr><td>IPv6 prefixes</td><td>0</td><td>n/a (install monocle)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>That last row is worth sitting with: section 02 keeps saying "no IPv6 announced today" for AS23859, but never showed what the alternative looks like. AARNet's own dual-stack deployment is the contrast &mdash; the same organisation, one hop up, actually running both.</p>
+      <div class="diagram">
+        <div class="diagram-row" style="align-items:stretch;">
+          <div class="node transit" style="justify-content:center; flex:0 0 170px;"><span class="role">Multi-homed</span><span class="node-as">AS7575</span><span class="node-name">AARNet</span></div>
+          <div style="display:flex; flex-direction:column; gap:10px; flex:1;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <svg width="34" height="16" viewBox="0 0 34 16" style="flex:none; color:var(--hue2);"><line x1="0" y1="8" x2="26" y2="8" stroke="currentColor" stroke-width="2"/><polygon points="26,3 34,8 26,13" fill="currentColor"/></svg>
+              <div class="node" style="border:2px solid var(--hue2); flex:1;"><span class="role" style="color:var(--hue2);">Providers &middot; 6</span><span class="node-name">e.g. AS1299, AS3356, AS2914 &mdash; AARNet's own upstream providers, ranked by observed path weight</span></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <svg width="34" height="16" viewBox="0 0 34 16" style="flex:none; color:var(--hue3);"><line x1="0" y1="8" x2="26" y2="8" stroke="currentColor" stroke-width="2"/><polygon points="26,3 34,8 26,13" fill="currentColor"/></svg>
+              <div class="node" style="border:2px solid var(--hue3); flex:1;"><span class="role" style="color:var(--hue3);">Peers &middot; 425</span><span class="node-name">Settlement-free exchanges, mostly at the 29 IXPs AARNet is present on &mdash; equals swapping only each other's routes, not transit</span></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <svg width="34" height="16" viewBox="0 0 34 16" style="flex:none; color:var(--hue4);"><line x1="0" y1="8" x2="26" y2="8" stroke="currentColor" stroke-width="2"/><polygon points="26,3 34,8 26,13" fill="currentColor"/></svg>
+              <div class="node" style="border:2px solid var(--hue4); flex:1;"><span class="role" style="color:var(--hue4);">Customers &middot; 112</span><span class="node-name">Networks AARNet provides transit for &mdash; including <span class="as-tag">AS23859</span> itself</span></div>
+            </div>
+          </div>
+        </div>
+        <p class="diagram-cap">This is the same three-way split (providers / peers / customers) that CAIDA's relationship-inference algorithm assigns to every AS in the global graph, and it's what makes AARNet's best-path selection (section 08) actually non-trivial: with 6 providers and 425 peers offering competing routes to the same destinations, local preference and AS-path length genuinely have work to do.</p>
+      </div>
+      <div class="worked">
+        <span class="label">Try it yourself</span>
+        <p>Query <code class="mono">https://stat.ripe.net/data/asn-neighbours/data.json?resource=AS23859</code> and the same URL with <code class="mono">resource=AS7575</code> &mdash; one returns a single row, the other returns hundreds. Then compare that to <code class="mono">https://api.asrank.caida.org/v2/restful/asns/7575</code>, which classifies every one of those neighbors as provider, peer, or customer instead of just left/right.</p>
+      </div>
+      <div class="worked">
+        <span class="label">Second opinion &mdash; BGPKIT's as2rel</span>
+        <p>BGPKIT's independent <code class="mono">as2rel</code> dataset (inferred from 7575 and 23859 across ~1,896 vantage points) puts a number on that ambiguity: only <b>41.8%</b> of vantage points see the AS7575&ndash;AS23859 link at all, and among those, <b>29.1%</b> classify AS7575 as the provider while <b>12.8%</b> classify it as a settlement-free peer instead (the rest, 0.0%, would call AS23859 the provider &mdash; essentially zero, as expected). Same physical link, two different inferred business relationships, depending entirely on which vantage points you trust &mdash; which is exactly why <code class="mono">monocle inspect 23859</code> reports "Total neighbors: 2" for a network whose own IRR <code class="mono">aut-num</code> object names exactly one upstream.</p>
+      </div>
+
+      <h3 style="font-size:1.05rem;font-weight:700;margin-top:6px;">A live capture: what "busy" actually looks like</h3>
+      <p>Everything elsewhere in this guide is a snapshot. BGPKIT's <code class="mono">monocle watch</code> instead streams BGP updates from RIPE RIS Live as they happen, in real time. Here's an actual bounded capture from this run, filtered to every update whose AS-PATH contains AS7575 anywhere in it:</p>
+      <div class="term"><div class="term-bar"><span class="mono">$ monocle watch --as-path 7575</span><span>RIPE RIS Live, live capture</span></div><pre><span class="c">ANNOUNCE</span>  2403:3b00::/32  <span class="v">207841 137409 7575 38083</span>  <span class="w">[transit]</span>
+<span class="c">ANNOUNCE</span>  2405:1300::/32  <span class="v">207841 137409 7575 58698</span>  <span class="w">[transit]</span>
+<span class="c">ANNOUNCE</span>  2405:2d00::/32  <span class="v">207841 137409 7575 58877</span>  <span class="w">[transit]</span>
+<span class="c">ANNOUNCE</span>  85.155.20.0/24  <span class="v">4608 7575 2914 4229 4229 140766</span>  <span class="w">[transit]</span>
+<span class="c">ANNOUNCE</span>  85.155.21.0/24  <span class="v">4608 7575 2914 4229 4229 140766</span>  <span class="w">[transit]</span></pre></div><p style="margin-top:12px;">Watched RIPE RIS Live for 15.0s, filtered to AS7575: 6 exact matches, and all 6 of them were AS7575 purely relaying <i>other</i> networks' prefixes rather than its own. That's the common case for a busy transit AS: it forwards other people's routing changes constantly, while its own handful of originated prefixes barely ever change. "Busy" and "unstable" are different things.</p>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="lesson" id="reading-paths">
+    <div class="section-head"><span class="num" style="background:var(--hue1)">05</span><h2>Reading an AS path</h2></div>
+    <div class="lesson-body">
+      <p class="lead">Every BGP route carries an <b>AS-PATH</b> attribute: the ordered list of every AS the announcement passed through. Read it <b>right to left</b> &mdash; the rightmost number is the <b>origin</b> (who owns the prefix), and each number to its left is one more network the route was relayed through before reaching the observer.</p>
+      <p>These 5 paths were captured live by RIPE RIS route collectors (London, United Kingdom), for the prefix <span class="as-tag">131.236.0.0/16</span>:</p>
+      <div class="paths-list">
+        <div class="prow"><span class="loc">London, United Kingdom</span><span class="path">15692 2914 <span class="hop up-hop">7575</span> <span class="hop origin-hop">23859</span></span></div>
+        <div class="prow"><span class="loc">London, United Kingdom</span><span class="path">8218 6461 3356 <span class="hop up-hop">7575</span> <span class="hop origin-hop">23859</span></span></div>
+        <div class="prow"><span class="loc">London, United Kingdom</span><span class="path">36924 1299 <span class="hop up-hop">7575</span> <span class="hop origin-hop">23859</span></span></div>
+        <div class="prow"><span class="loc">London, United Kingdom</span><span class="path">48070 61049 174 3356 <span class="hop up-hop">7575</span> <span class="hop origin-hop">23859</span></span></div>
+        <div class="prow"><span class="loc">London, United Kingdom</span><span class="path">6894 2516 2914 <span class="hop up-hop">7575</span> <span class="hop origin-hop">23859</span></span></div>
+      </div>
+      <p>Notice every single path ends in <span class="as-tag">7575 23859</span> &mdash; direct visual proof of the single-homed structure from section 03. The numbers further left are just whichever transit providers each vantage point happened to reach AARNet through &mdash; they vary path to path, but the last two hops never do.</p>
+      <div class="worked">
+        <span class="label">Exercise</span>
+        <p>The shortest path above is <span class="as-tag">15692 2914 7575 23859</span> &mdash; 4 hops. The longest is 6 hops. In BGP's default best-path algorithm, shorter AS-PATH generally wins when everything else is equal (see section 08). Why might a shorter observed path <i>not</i> always mean "better" or "faster"? (Hint: AS-PATH length says nothing about physical distance, latency, or link capacity &mdash; it only counts network hops.)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section class="lesson" id="rib">
+    <div class="section-head"><span class="num" style="background:var(--hue2)">06</span><h2>What's in a RIB</h2></div>
+    <div class="lesson-body">
+      <p class="lead">Before a router can choose a "best" route, it needs somewhere to keep every candidate it's heard about. That's the <b>RIB</b> (Routing Information Base) &mdash; a router's complete internal table of every route it has learned, from every neighbor, before any selection happens. BGP actually keeps three of these:</p>
+      <ul class="plain">
+        <li><b>Adj-RIB-In</b> &mdash; the raw routes each individual neighbor has advertised, one table per neighbor, before any filtering. AS23859 has exactly one of these (from AS7575); AARNet has hundreds.</li>
+        <li><b>Loc-RIB</b> &mdash; after import policy and the best-path algorithm (section 08) run over every Adj-RIB-In, this is the single winning route per prefix the router has chosen for itself.</li>
+        <li><b>Adj-RIB-Out</b> &mdash; after export policy, whichever routes from Loc-RIB this router has decided to advertise onward to each neighbor.</li>
+      </ul>
+      <p>Loc-RIB then gets compiled into the <b>FIB</b> (Forwarding Information Base) &mdash; the actual, often hardware-accelerated, table a router uses to switch packets. RIB is control-plane bookkeeping ("what do I know about"); FIB is data-plane execution ("what do I do with this packet right now"). In the postal-service analogy from section 01: the RIB is the sorting office's ledger of every route every other office has ever mentioned; the FIB is the label actually slapped on the truck right now.</p>
+      <div class="worked">
+        <span class="label">Where this shows up in the tooling</span>
+        <p>Route collectors like the RIPE RIS nodes queried throughout this guide don't run real routing decisions &mdash; they just record each peer's Adj-RIB-In as-is. Periodically they snapshot that into a full <b>RIB dump</b> (an MRT file, e.g. <code class="mono">rib.20260915.0200.bz2</code>), then record only the changes in between as UPDATE files. That's exactly what <code class="mono">monocle rib &lt;timestamp&gt;</code> (section 14) reconstructs: it takes the last full dump before your requested time and replays the intervening updates forward to rebuild the table as it stood at that instant.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section class="lesson" id="table-size">
+    <div class="section-head"><span class="num" style="background:var(--hue3)">07</span><h2>How big is the routing table, really?</h2></div>
+    <div class="lesson-body">
+      <p class="lead">As of this run, one full-feed vantage point (RouteViews' AS6447, via Geoff Huston's BGP Routing Table Report) carries <b>1,127,118</b> active IPv4 FIB entries from <b>79,883</b> distinct ASes (67,221 origin-only &mdash; stub networks like AS23859 &mdash; 712 transit-only, 11,950 mixed like AS7575). Average AS-PATH length: 3.92 hops (max observed: 14) &mdash; consistent with the 3&ndash;5 hop paths you read in section 05. IPv6's active table is far smaller: 264,189 entries.</p>
+      <div class="worked">
+        <span class="label">The memory math</span>
+        <p>That 1,127,118-entry FIB is only part of the picture: this same vantage point actually receives <b>17,468,864</b> total RIB entries once you count every peer's copy of every candidate route (a RIB/FIB ratio of 15.5&times;) &mdash; section 06's Adj-RIB-In vs. Loc-RIB distinction, at Internet scale. Forwarding hardware (TCAM) is commonly estimated at roughly 100&ndash;150 bytes per entry, which puts the compiled FIB at only about 113&ndash;169MB &mdash; trivial by today's standards. Naively keeping the <i>entire</i> 17,468,864-entry RIB in that same specialized memory would cost roughly 1.7&ndash;2.6GB instead. That gap is exactly why routers don't do that: Loc-RIB (one winner per prefix) is small enough for expensive, fixed-size, ternary-matching hardware; the full RIB lives in ordinary, cheap, expandable RAM on the control plane instead.</p>
+      </div>
+      <div class="worked alt">
+        <span class="label">A real incident &mdash; 512K Day, 2014</span>
+        <p>On 12 August 2014, the global IPv4 FIB crossed 512,000 entries &mdash; and many older Cisco routers had their TCAM hard-partitioned to exactly 512K IPv4 slots (with a separate, mostly-unused 256K reserved for IPv6, which had barely 20,000 routes at the time). Routers that hit the ceiling didn't just refuse new routes: some fell back from hardware to slow software forwarding, others silently dropped or blackholed the overflow. eBay, LastPass, and Microsoft Azure all saw real outages that day. Today's IPv4 FIB, at 1,127,118 entries, is over 2.2&times; that old ceiling. The fix wasn't more physical memory &mdash; it was repartitioning the same TCAM (and, longer-term, buying hardware with bigger tables). "Splitting it up" happens on at least two levels: physically, a chassis router spreads its FIB across multiple forwarding-ASIC line cards, each needing its own synced copy; operationally, edge networks that don't need a full table at all just carry a default route instead, and large ASes scale their internal iBGP mesh (section 03) with route reflectors or confederations rather than a full mesh of sessions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 -->
+  <section class="lesson" id="best-path">
+    <div class="section-head"><span class="num" style="background:var(--hue4)">08</span><h2>How a route wins: best-path selection</h2></div>
+    <div class="lesson-body">
+      <p class="lead">A router that hears about the <i>same</i> prefix from multiple neighbors has to pick exactly one route out of its RIB (section 06) to actually use. It runs a fixed sequence of tie-breakers, roughly in this order:</p>
+      <ol class="plain">
+        <li><b>Highest Local Preference</b> &mdash; a locally-set policy value; "prefer this neighbor over that one."</li>
+        <li><b>Shortest AS-PATH</b> &mdash; fewer hops wins (what you just measured in section 05).</li>
+        <li><b>Lowest origin type / MED</b> &mdash; finer-grained hints between two connections to the <i>same</i> neighbor AS.</li>
+        <li><b>eBGP over iBGP</b> &mdash; prefer externally-learned routes over internally-relayed ones.</li>
+        <li><b>Lowest IGP metric, then lowest router ID</b> &mdash; final tie-breakers so every router converges on the same answer.</li>
+      </ol>
+      <p>None of this is guesswork on a router &mdash; it's a strict, deterministic list, evaluated top to bottom until one route wins outright.</p>
+      <p><b>Why this exact order?</b> It moves from most intentional to most mechanical:</p>
+      <ul class="plain">
+        <li><b>Local Preference is checked first</b> because it's the one signal a human operator set <i>on purpose</i> &mdash; a deliberate policy choice like "prefer my cheap peering link over my paid transit." It's iBGP-only (stripped before advertising to another AS), which is exactly why it goes first: it's the network's own voice, before the protocol falls back to any automatic default.</li>
+        <li><b>AS-PATH length is next</b> because once no one has expressed a preference, BGP needs a cheap, universal fallback. Every route carries an AS-PATH and every router can compare it with zero configuration &mdash; the protocol's default proxy for "simpler path," even though hop count says nothing about latency or capacity.</li>
+        <li><b>MED matters only after that</b> because it's a narrower signal: one neighboring AS hinting which of several links <i>into itself</i> to prefer. It's only ever compared between routes heard from the <i>same</i> neighboring AS &mdash; different networks may set MED on completely different scales, so comparing it more broadly would be meaningless.</li>
+        <li><b>eBGP over iBGP isn't a preference at all</b> &mdash; it's a structural safety rule: trust directly-learned external information over routes merely relayed inside your own AS, so two routers in the same AS don't disagree about which path is authoritative.</li>
+        <li><b>Lowest IGP metric, then lowest router ID</b> are arbitrary tiebreakers whose only job is to guarantee <i>an</i> answer &mdash; lowest wins both, by convention, not because a low number means anything about quality. If everything meaningful ties, every router in the AS still has to converge on the exact same single path, and an arbitrary-but-computable value like router ID guarantees that.</li>
+      </ul>
+      <p>Put differently: this is exactly what a fully decentralized system of ~75,000 independent networks needs to always agree on one answer without any central coordinator &mdash; intentional policy first, then increasingly mechanical fallbacks, ending in an arbitrary but deterministic tiebreak.</p>
+      <div class="worked">
+        <span class="label">Worked example</span>
+        <p>AS23859 makes this trivial for itself: with only one neighbor (AS7575), there's nothing to compare &mdash; every route out is "the AS7575 route," full stop. Best-path selection only gets interesting once you're multi-homed, like AARNet is &mdash; with 6 providers and 425 peers, AARNet's routers run this whole sequence constantly.</p>
+      </div>
+      <p>Policy is expressed in the routing registry as <b>import</b> and <b>export</b> statements (section 10), and can be influenced remotely by a neighbor via communities (section 09 &mdash; next).</p>
+    </div>
+  </section>
+
+  <!-- 09 -->
+  <section class="lesson" id="communities">
+    <div class="section-head"><span class="num" style="background:var(--hue1)">09</span><h2>Communities: tagging routes with extra meaning</h2></div>
+    <div class="lesson-body">
+      <p class="lead">A route can carry more than AS-PATH and Local Preference &mdash; it can also carry <b>communities</b>: tags, usually written <code class="mono">ASN:VALUE</code>, that let one network signal or request a policy action without needing bespoke configuration for every neighbor pair. Communities are opt-in and travel with the route until something strips them.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th class="mono">Community</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">NO_EXPORT (65535:65281)</td><td>Don't advertise this route beyond the local AS or confederation</td></tr>
+            <tr><td class="mono">NO_ADVERTISE (65535:65282)</td><td>Don't advertise this route to any BGP neighbor at all</td></tr>
+            <tr><td class="mono">BLACKHOLE (65535:666)</td><td>Please drop traffic to this prefix &mdash; a coordinated DDoS-mitigation signal (RFC 7999)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Those three are IANA-registered and universally understood. Everything else is <b>operator-defined</b>: each network invents, and sometimes documents, its own numbers for things like geographic tagging, customer-type markers, or "please prepend N times before advertising this onward."</p>
+      <div class="worked">
+        <span class="label">Real example, captured live</span>
+        <p>Captured live from the same RIS Live firehose used elsewhere in this guide: <span class="as-tag">AS32398</span> announcing <span class="as-tag">41.204.10.0/24</span> carrying 1 community: <code class="mono">6461:5997</code>. Unless you have AS32398's own published community guide, those numbers are meaningless &mdash; that's the point. Unlike the well-known ones above, operator-defined communities are private vocabulary: agreed bilaterally or documented unilaterally on a network's own website, never centrally registered.</p>
+      </div>
+      <p>This is also how a customer can remotely influence the Local Preference decision from section 08 without needing its own config on the upstream's router: many transit providers publish community values like <code class="mono">ASN:80</code> / <code class="mono">ASN:90</code> / <code class="mono">ASN:100</code> that a customer can attach to ask for "low / normal / high preference," and the upstream's router maps that community to an actual local-pref value on receipt.</p>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="lesson" id="irr">
+    <div class="section-head"><span class="num" style="background:var(--hue2)">10</span><h2>The routing registry (IRR)</h2></div>
+    <div class="lesson-body">
+      <p class="lead">The <b>Internet Routing Registry</b> is a public, distributed database where networks declare, in a structured language called <b>RPSL</b> (RFC 2622), which prefixes they originate and which neighbors they accept routes from. Each RIR runs its own IRR (APNIC's is at <code class="mono">whois.apnic.net</code>); records are mirrored between registries so tools anywhere can build route filters from them.</p>
+      <p>Query it with the <code class="mono">whois</code> command line tool, just like looking up a domain. Here's AS23859's actual <code class="mono">route:</code> objects &mdash; the declarations that say "this prefix is legitimately mine":</p>
+      <div class="term">
+        <div class="term-bar"><span>$ whois -h whois.apnic.net -- "-i origin AS23859"</span><span>route objects</span></div>
+        <pre><span class="c">% Information related to '129.94.0.0/16AS23859'</span>
+
+<span class="k">route:</span>          129.94.0.0/16
+<span class="k">origin:</span>         AS23859
+<span class="c">descr:          University of New South Wales</span>
+<span class="k">mnt-by:</span>         MAINT-AU-NSWUNIVERSITY
+<span class="k">source:</span>         APNIC
+
+<span class="c">&hellip; 2 more route object(s) follow the same pattern for
+    131.236.0.0/16, 149.171.0.0/16 &hellip;</span></pre>
+      </div>
+      <p>And here's its <code class="mono">aut-num:</code> object &mdash; the policy record that says <i>which neighbors it will accept routes from and announce routes to</i>:</p>
+      <div class="term">
+        <div class="term-bar"><span>$ whois -h whois.apnic.net -- "-T aut-num AS23859"</span><span>policy object</span></div>
+        <pre><span class="k">aut-num:</span>        AS23859
+<span class="k">as-name:</span>        UNSW-AS-AP
+<span class="k">import:</span>         from AS7575 accept ANY
+<span class="k">import:</span>         from AS18062 accept ANY
+<span class="k">export:</span>         to AS7575 announce AS23859
+<span class="k">export:</span>         to AS18062 announce AS23859
+<span class="k">mnt-by:</span>         APNIC-HM
+<span class="w">last-modified:  2020-06-22T05:22:11Z</span></pre>
+      </div>
+      <p><code class="mono">import: from X accept ANY</code> reads as <i>"accept anything AS X sends me."</i> <code class="mono">export: to X announce AS23859</code> reads as <i>"tell AS X about my own prefixes."</i> Real policies (unlike this simplified <code class="mono">ANY</code>) are usually far more restrictive, filtering by specific prefixes or AS-SETs.</p>
+      <div class="worked">
+        <span class="label">Spot the problem</span>
+        <p>This object references <span class="as-tag">AS18062</span> as a neighbor &mdash; but no live BGP path anywhere shows AS23859 connected to it, and the object hasn't been touched since 2020. Section 12 investigates why: it's a textbook example of IRR data drifting out of sync with reality.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="lesson" id="rpki">
+    <div class="section-head"><span class="num" style="background:var(--hue3)">11</span><h2>RPKI &amp; route origin validation</h2></div>
+    <div class="lesson-body">
+      <p class="lead">The IRR (section 10) is honor-system data &mdash; nothing stops a network from typing a route object for a prefix it doesn't own. <b>RPKI</b> (Resource Public Key Infrastructure) fixes that with cryptography: the legitimate holder of a prefix signs a <b>ROA</b> (Route Origin Authorization) stating <i>"only AS X is allowed to originate this prefix."</i> Routers can then check every announcement against the signed ROA set and label it:</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><span class="chip good">valid</span></td><td>A ROA exists and matches this exact prefix + origin AS</td></tr>
+            <tr><td><span class="chip warn">invalid</span></td><td>A ROA exists, but names a <i>different</i> origin AS or a shorter max-length &mdash; a strong hijack signal</td></tr>
+            <tr><td><span class="chip mute">unknown</span></td><td>No ROA covers this prefix at all &mdash; RPKI simply has no opinion</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="worked">
+        <span class="label">Worked example &mdash; a real gap</span>
+        <p>3 of AS23859's 4 prefixes are <span class="chip good">valid</span>. <span class="as-tag">203.10.48.0/24</span> comes back <span class="chip warn">no ROA</span> &mdash; querying RIPEstat's validator directly confirms why: <code class="mono">"validating_roas": []</code>. Until a ROA covers it, RPKI-aware routers have no cryptographic basis to reject an impostor announcing that same prefix from a different AS.</p>
+      </div>
+      <div class="term">
+        <div class="term-bar"><span>GET stat.ripe.net/data/rpki-validation/data.json?resource=AS23859&amp;prefix=&hellip;</span><span>RIPEstat API</span></div>
+        <pre><span class="c">{</span>
+  <span class="k">"status"</span>: <span class="w">"unknown"</span>,
+  <span class="k">"validating_roas"</span>: []
+<span class="c">}</span></pre>
+      </div>
+      <p>Important nuance: <span class="chip mute">unknown</span> is not itself an attack &mdash; most of the Internet's address space still has no ROA. It just means that one prefix currently has zero cryptographic protection.</p>
+      <div class="worked">
+        <span class="label">Zoom out &mdash; AARNet's whole portfolio</span>
+        <p>Install BGPKIT's <code class="mono">monocle</code> and re-run the generator to see how AS7575's RPKI coverage looks across its <i>entire</i> announced portfolio, not just the four prefixes it hands to AS23859.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="lesson" id="failures">
+    <div class="section-head"><span class="num" style="background:var(--hue4)">12</span><h2>When BGP goes wrong</h2></div>
+    <div class="lesson-body">
+      <p class="lead">BGP was designed in an era of mutual trust between a handful of research networks, and that trust model is still largely how it runs today. That produces a recurring family of real incidents:</p>
+      <ul class="plain">
+        <li><b>Route hijack</b> &mdash; an AS originates a prefix it doesn't own, accidentally or deliberately, pulling traffic toward itself. RPKI's <span class="chip warn">invalid</span> status (section 11) is the direct countermeasure.</li>
+        <li><b>Route leak</b> &mdash; an AS re-announces routes it only learned for internal use, to neighbors who shouldn't see them, turning a stub network into an accidental transit path.</li>
+        <li><b>MOAS</b> (Multi-Origin AS) &mdash; the same prefix announced by more than one origin AS at once. Sometimes legitimate (anycast), often the first visible symptom of a hijack.</li>
+        <li><b>Stale registry data</b> &mdash; IRR/RPKI objects that no one updates as real topology changes, silently drifting away from the truth.</li>
+      </ul>
+      <div class="worked alt">
+        <span class="label">A real incident &mdash; Pakistan Telecom vs. YouTube, 2008</span>
+        <p>In February 2008, Pakistan Telecom (AS17557) was ordered to block YouTube domestically. Its engineers configured a more-specific <span class="as-tag">/24</span> route for a piece of YouTube's address space, intending to black-hole it only inside Pakistan &mdash; but the route leaked to their upstream, PCCW (AS3491), which propagated it globally. Because a /24 is more specific than YouTube's actual announcement, longest-prefix-match made routers worldwide prefer the fake route, making YouTube unreachable for roughly two hours. No malice was required, just a locally-scoped intention that leaked past its boundary &mdash; and it's one of the most frequently cited incidents motivating RPKI's later development.</p>
+      </div>
+      <div class="worked">
+        <span class="label">Worked example &mdash; found in this case file</span>
+        <p>AS18062 (<span class="as-tag">GRANGENET-AS-AP</span>) is now announcing prefixes again (<code class="mono">"announced": true</code>) &mdash; re-check whether AS23859's <code class="mono">aut-num</code> import/export lines referencing it reflect a live relationship before treating this as stale data.</p>
+      </div>
+      <div class="worked">
+        <span class="label">MOAS check &mdash; actually run, not just described</span>
+        <p>We actually ran this check, rather than just describing it: querying RIPEstat's routing-status for all of AS23859's prefixes (<span class="as-tag">131.236.0.0/16</span>, <span class="as-tag">129.94.0.0/16</span>, <span class="as-tag">203.10.48.0/24</span>, <span class="as-tag">149.171.0.0/16</span>) turns up exactly one origin AS each &mdash; AS23859 itself. No MOAS today. That's the boring-but-correct outcome; what matters pedagogically is that the check exists and runs on every regeneration, since a MOAS can appear at any time without warning.</p>
+      </div>
+      <div class="worked">
+        <span class="label">ASPA &mdash; the leak-protection layer</span>
+        <p>RPKI's ROAs (section 10) authenticate <i>origin</i> &mdash; they say nothing about the AS-PATH shape a leak exploits. A newer, complementary object called an <b>ASPA</b> (Autonomous System Provider Authorization, RFC 9582) fixes that: a customer publishes "my only valid providers are X, Y, Z," letting a receiving router reject a route whose path shape doesn't match. Querying BGPKIT's cached ASPA set: AS7575 (AARNet) is already named as an authorized provider by 5 other customers (AS4608 (Asia Pacific Network Information Centre), AS24014 (Bond University Limited), AS24390 (University of the South Pacific), AS45163 (APNIC Member Services 2), AS139700 (Capricorn Space Pty Ltd)) &mdash; but AS23859 itself has published 0 ASPA records naming AS7575 as its own provider. Like RPKI ROAs a few years ago, ASPA adoption is real but still partial, even between networks that already trust each other operationally.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 -->
+  <section class="lesson" id="misconceptions">
+    <div class="section-head"><span class="num" style="background:var(--hue1)">13</span><h2>Common misconceptions</h2></div>
+    <div class="lesson-body">
+      <p class="lead">Now that sections 01&ndash;12 have covered the mechanics, here's where people new to BGP most often get tripped up &mdash; each one ties back to something you've already seen above.</p>
+      <div class="myths">
+        <div class="myth-card">
+          <p class="myth"><b>Myth:</b> "Shortest AS-PATH wins, so it's the fastest route."</p>
+          <p class="reality"><b>Reality:</b> AS-PATH length is only the <i>second</i> tiebreaker (section 08), checked after Local Preference, and even then it just counts hops &mdash; nothing about latency, bandwidth, or physical distance. The exercise in section 05 is built around exactly this trap.</p>
+        </div>
+        <div class="myth-card">
+          <p class="myth"><b>Myth:</b> "BGP is basically OSPF or EIGRP, just bigger."</p>
+          <p class="reality"><b>Reality:</b> IGPs optimize for a metric. BGP optimizes for <i>policy</i> &mdash; a human-set business decision (Local Preference, section 08) always outranks anything resembling "shortest" or "best."</p>
+        </div>
+        <div class="myth-card">
+          <p class="myth"><b>Myth:</b> "Some router out there has a map of the whole Internet."</p>
+          <p class="reality"><b>Reality:</b> no router anywhere holds one. Each router only knows what its own neighbors told it (Adj-RIB-In, section 06) &mdash; the same postal-relay logic from section 01, all the way down.</p>
+        </div>
+        <div class="myth-card">
+          <p class="myth"><b>Myth:</b> "RPKI-valid means the route is safe to trust."</p>
+          <p class="reality"><b>Reality:</b> RPKI/ROV (section 11) only checks who is allowed to <i>originate</i> a prefix. It says nothing about the AS-PATH shape in between &mdash; exactly the gap ASPA (section 12) exists to close.</p>
+        </div>
+        <div class="myth-card">
+          <p class="myth"><b>Myth:</b> "Routers double-check legitimacy before preferring a more-specific route."</p>
+          <p class="reality"><b>Reality:</b> longest-prefix-match is unconditional &mdash; a smaller, more-specific block always wins over a bigger covering one, from <i>whoever</i> announces it. That single rule is exactly what made the 2008 Pakistan Telecom/YouTube hijack (section 12) propagate globally instead of staying local.</p>
+        </div>
+        <div class="myth-card">
+          <p class="myth"><b>Myth:</b> "BGP reroutes almost instantly, like a phone switching Wi-Fi networks."</p>
+          <p class="reality"><b>Reality:</b> global convergence after a real change can take tens of seconds to minutes. Routers "path-hunt" through less-preferred alternatives before settling, and propagation crosses potentially hundreds of ASes one hop at a time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 -->
+  <section class="lesson" id="toolkit">
+    <div class="section-head"><span class="num" style="background:var(--hue2)">14</span><h2>Student toolkit</h2></div>
+    <div class="lesson-body">
+      <p class="lead">Every fact in this guide came from a handful of free, public sources &mdash; including two independent toolchains cross-checking each other. No account or API key required &mdash; try them on your own AS number or your ISP's.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Tool</th><th>Command / URL</th><th>What it tells you</th></tr></thead>
+          <tbody>
+            <tr><td>Route objects</td><td class="mono">whois -h whois.apnic.net -- "-i origin ASxxxx"</td><td>Declared prefixes</td></tr>
+            <tr><td>Policy object</td><td class="mono">whois -h whois.apnic.net -- "-T aut-num ASxxxx"</td><td>import/export neighbors</td></tr>
+            <tr><td>IRR mirror</td><td class="mono">whois -h whois.radb.net ASxxxx</td><td>Same data via a different registry</td></tr>
+            <tr><td>Neighbors</td><td class="mono">stat.ripe.net/data/asn-neighbours/data.json?resource=ASxxxx</td><td>Who this AS actually talks to, live</td></tr>
+            <tr><td>Prefixes</td><td class="mono">stat.ripe.net/data/announced-prefixes/data.json?resource=ASxxxx</td><td>IPv4 + IPv6 announcements</td></tr>
+            <tr><td>RPKI check</td><td class="mono">stat.ripe.net/data/rpki-validation/data.json?resource=ASxxxx&amp;prefix=a.b.c.d/n</td><td>valid / invalid / unknown, and why</td></tr>
+            <tr><td>MOAS check</td><td class="mono">stat.ripe.net/data/routing-status/data.json?resource=a.b.c.d/n</td><td>All current origin ASes for a prefix</td></tr>
+            <tr><td>AS identity</td><td class="mono">stat.ripe.net/data/as-overview/data.json?resource=ASxxxx</td><td>Holder name, announced status</td></tr>
+            <tr><td>Global rank</td><td>CAIDA ASRank (asrank.caida.org)</td><td>Customer cone size, degree, rough size/influence</td></tr>
+            <tr><td>Peering footprint</td><td>PeeringDB (peeringdb.com)</td><td>Which exchange points a network is at</td></tr>
+            <tr><td>Path history</td><td>RIPE RIS Live / BGPlay</td><td>How an AS-PATH changes minute to minute</td></tr>
+            <tr><td>Unified CLI</td><td class="mono">monocle inspect ASxxxx</td><td>ASInfo + prefixes + RPKI + relationships in one lookup (BGPKIT, <code class="mono">brew install bgpkit/tap/monocle</code>)</td></tr>
+            <tr><td>Relationship inference</td><td class="mono">monocle as2rel ASxxxx ASyyyy</td><td>Independent provider/peer/customer inference, with confidence %</td></tr>
+            <tr><td>ASPA lookup</td><td class="mono">monocle rpki aspas --customer ASxxxx</td><td>Which providers an AS has authorized (leak protection)</td></tr>
+            <tr><td>Historical RIB</td><td class="mono">monocle rib 2024-01-01T00:00:00Z -c rrc00 -o ASxxxx</td><td>Reconstructs the exact routing table at any past moment</td></tr>
+            <tr><td>Live stream</td><td class="mono">monocle watch --host rrc00 --as-path ASxxxx</td><td>Real-time BGP updates from RIPE RIS Live as they happen</td></tr>
+            <tr><td>Raw MRT files</td><td class="mono">api.bgpkit.com/v3/broker/latest?collector=rrc00</td><td>Finds archived RIB/update dump files across 70+ collectors</td></tr>
+            <tr><td>Global table size</td><td class="mono">bgp.potaroo.net/as6447/bgp-active.txt</td><td>Live IPv4 FIB/RIB size, AS counts, path-length stats (section 07)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="worked">
+        <span class="label">Note on this run</span>
+        <p>BGPKIT's monocle CLI was installed and queried live for this run.</p>
+      </div>
+      <div class="worked">
+        <span class="label">Extend this yourself</span>
+        <p>Ideas that go beyond what's in this guide: pull the <b>IPv6</b> equivalents of every query above and compare coverage; run a <b>traceroute</b> toward the origin network and match real hops to the AS-PATH; use <code class="mono">monocle rib</code> to reconstruct AS23859's table from a year ago and see what's changed; or build a "would this be valid?" RPKI simulator that takes any prefix/origin pair a classmate types in and calls the RIPEstat validator live.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 -->
+  <section class="lesson" id="glossary">
+    <div class="section-head"><span class="num" style="background:var(--hue3)">15</span><h2>Glossary &amp; key takeaways</h2></div>
+    <div class="lesson-body">
+      <dl class="glossary">
+        <div class="gterm"><dt>AS (Autonomous System)</dt><dd>An independently-operated network with its own routing policy, identified by an AS number.</dd></div>
+        <div class="gterm"><dt>AS-PATH</dt><dd>The ordered list of ASes a route passed through; read right-to-left, with the origin AS as the rightmost entry.</dd></div>
+        <div class="gterm"><dt>RIB / FIB</dt><dd>RIB: every route a router has learned, before selection (Adj-RIB-In/Loc-RIB/Adj-RIB-Out). FIB: the compiled table actually used to forward packets.</dd></div>
+        <div class="gterm"><dt>TCAM</dt><dd>Ternary Content-Addressable Memory &mdash; specialized, expensive, fixed-size hardware memory routers use to hold the FIB for line-rate forwarding.</dd></div>
+        <div class="gterm"><dt>eBGP / iBGP</dt><dd>BGP between different ASes, versus BGP between routers inside the same AS.</dd></div>
+        <div class="gterm"><dt>Single- / multi-homed</dt><dd>One upstream versus two-or-more; determines failover resilience.</dd></div>
+        <div class="gterm"><dt>Community</dt><dd>An ASN:VALUE tag on a route used to signal or request a policy action; some are IANA-standard (NO_EXPORT), most are operator-defined.</dd></div>
+        <div class="gterm"><dt>IRR / RPSL</dt><dd>The public registry (and its declaration language) where networks state ownership and policy.</dd></div>
+        <div class="gterm"><dt>ROA</dt><dd>A signed statement: "only this AS may originate this prefix."</dd></div>
+        <div class="gterm"><dt>RPKI / ROV</dt><dd>The cryptographic system built on ROAs, and the act of checking routes against them.</dd></div>
+        <div class="gterm"><dt>ASPA</dt><dd>Autonomous System Provider Authorization &mdash; a signed list of an AS's valid providers, used to detect route leaks (a path-shape problem ROAs don't cover).</dd></div>
+        <div class="gterm"><dt>MOAS</dt><dd>The same prefix announced by more than one origin AS &mdash; sometimes legitimate, often a hijack signal.</dd></div>
+        <div class="gterm"><dt>Stub network</dt><dd>An AS that only originates its own routes and never carries anyone else's traffic &mdash; like AS23859.</dd></div>
+        <div class="gterm"><dt>Customer cone</dt><dd>Every AS reachable downstream of a given AS through customer relationships &mdash; a rough proxy for size/influence.</dd></div>
+      </dl>
+      <p class="lead" style="margin-top:8px;">Four takeaways to remember AS23859 by:</p>
+      <ol class="plain">
+        <li>A stub network's routing table can be almost entirely explained by <i>one</i> relationship &mdash; here, "send it all to AS7575."</li>
+        <li>Trust in BGP is layered: IRR declares intent (unverified), RPKI cryptographically proves origin (verified, but not universal).</li>
+        <li>Real registries accumulate cruft. A stale policy object referencing a dead AS is not a crisis &mdash; but at Internet scale, this exact kind of drift is the raw material real incidents are made of.</li>
+        <li>Scale bites in unglamorous ways: a full IPv4 table is only tens of megabytes of actual data, but a hard-coded hardware partition size (not "not enough RAM") is what took down eBay, LastPass, and Azure for a few hours in 2014.</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span>Live BGP/whois/RPKI data captured 2026-10-09 from RIPE RIS, RIPEstat, APNIC WHOIS, RADb, and CAIDA ASRank.</span>
+    <span>This page is generated, not hand-written: <code class="mono">uv run generate_field_guide.py</code> renders it from <code class="mono">field_guide_template.html</code> plus everything above, live, on every run (<code class="mono">--self-test</code> runs its offline regression checks; <code class="mono">--cache-ttl</code> reuses recent fetches). If you're reading this without those files, ask whoever shared it for the source.</span>
+    <span>Built as a teaching aid &mdash; not operational guidance for AS23859's actual network operators.</span>
+  </footer>
+
+</div>

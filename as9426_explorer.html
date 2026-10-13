@@ -1,0 +1,625 @@
+<meta charset="utf-8">
+<title>AS9426 Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Literata:ital,opsz,wght@0,18..144,400;0,18..144,500;0,18..144,600;1,18..144,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10192A;
+    --paper:#FAFBF8;
+    --surface:#FFFFFF;
+    --surface-2:#EEF1EC;
+    --border:#DCE1D8;
+    --text-muted:#57626B;
+    --accent:#3452C4;
+    --accent-soft:#E4E9FA;
+    --accent-2:#C2792B;
+    --accent-2-soft:#F5E7D2;
+    --good:#1F8F5B;
+    --good-soft:#DFF1E7;
+    --warn:#9C6B18;
+    --warn-soft:#F3E7CE;
+    --bad:#B3261E;
+    --bad-soft:#FBE4E1;
+    --info:#2F6FA6;
+    --info-soft:#DFEAF5;
+    --hue1:#2E8BC9; --hue1-soft:#DFF0FA;
+    --hue2:#4653C7; --hue2-soft:#E4E6FA;
+    --hue3:#C13E74; --hue3-soft:#FBE3EC;
+    --hue4:#D0812C; --hue4-soft:#FBEBD8;
+    --shadow: 0 1px 2px rgba(16,25,42,0.06), 0 10px 28px -14px rgba(16,25,42,0.22);
+    padding-top: env(safe-area-inset-top,0px);
+    padding-bottom: env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#EDEFF2;
+      --paper:#0E1310;
+      --surface:#161C18;
+      --surface-2:#1D2420;
+      --border:#2B342E;
+      --text-muted:#9AA6A0;
+      --accent:#8DA0F2;
+      --accent-soft:#212B4A;
+      --accent-2:#E3A868;
+      --accent-2-soft:#3B2D18;
+      --good:#5FCB93;
+      --good-soft:#173226;
+      --warn:#E3B45E;
+      --warn-soft:#3A2E13;
+      --bad:#F2897E;
+      --bad-soft:#3A1D1B;
+      --info:#7FB2E6;
+      --info-soft:#182B3B;
+      --hue1:#6EB6E8; --hue1-soft:#122A38;
+      --hue2:#8C97E8; --hue2-soft:#1E2140;
+      --hue3:#E489AC; --hue3-soft:#3A1E2A;
+      --hue4:#E8A868; --hue4-soft:#3A2A13;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 28px -14px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#EDEFF2;
+    --paper:#0E1310;
+    --surface:#161C18;
+    --surface-2:#1D2420;
+    --border:#2B342E;
+    --text-muted:#9AA6A0;
+    --accent:#8DA0F2;
+    --accent-soft:#212B4A;
+    --accent-2:#E3A868;
+    --accent-2-soft:#3B2D18;
+    --good:#5FCB93;
+    --good-soft:#173226;
+    --warn:#E3B45E;
+    --warn-soft:#3A2E13;
+    --bad:#F2897E;
+    --bad-soft:#3A1D1B;
+    --info:#7FB2E6;
+    --info-soft:#182B3B;
+    --hue1:#6EB6E8; --hue1-soft:#122A38;
+    --hue2:#8C97E8; --hue2-soft:#1E2140;
+    --hue3:#E489AC; --hue3-soft:#3A1E2A;
+    --hue4:#E8A868; --hue4-soft:#3A2A13;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 28px -14px rgba(0,0,0,0.5);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Literata', Georgia, 'Times New Roman', serif;
+    font-size:16px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;}
+  [hidden]{display:none!important;}
+
+  .wrap{
+    max-width:880px;
+    margin:0 auto;
+    padding-inline:20px;
+    padding-block:40px 80px;
+    display:flex;
+    flex-direction:column;
+    gap:56px;
+  }
+
+  h1,h2,h3,.pill,.chip,.nav-list a,.kicker,.node-name,.node-as,button{
+    font-family:'Outfit', 'Segoe UI', sans-serif;
+  }
+  h1,h2,h3{text-wrap:balance; margin:0; color:var(--ink);}
+
+  .kicker{
+    font-size:0.78rem;
+    font-weight:600;
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead{display:flex; flex-direction:column; gap:18px;}
+  .masthead h1{font-size:clamp(2rem, 5vw, 2.9rem); font-weight:800; line-height:1.08;}
+  .masthead .dek{
+    font-size:1.1rem;
+    color:var(--text-muted);
+    max-width:62ch;
+  }
+  .masthead .dek b{color:var(--ink); font-weight:600;}
+  .meta-row{
+    display:flex; flex-wrap:wrap; gap:10px;
+  }
+  .meta-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.8rem;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:7px;
+    padding:5px 10px;
+    color:var(--text-muted);
+  }
+  .meta-tag b{color:var(--ink); font-weight:600;}
+
+  /* ---------- notable-findings summary ---------- */
+  .highlights{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:18px 22px;
+    box-shadow:var(--shadow);
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .highlights h2{font-size:1.05rem; font-weight:700; margin:0;}
+  .finding{display:flex; align-items:flex-start; gap:10px; font-size:0.92rem;}
+  .finding .chip{flex:none; margin-top:2px;}
+
+  /* ---------- agenda / toc ---------- */
+  .agenda{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:22px 22px 10px;
+    box-shadow:var(--shadow);
+  }
+  .agenda h2{font-size:1.05rem; font-weight:700; margin-bottom:14px;}
+  .agenda-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column;}
+  .agenda-list li{
+    border-top:1px solid var(--border);
+  }
+  .agenda-list li:first-child{border-top:none;}
+  .agenda-list a{
+    display:flex; align-items:center; gap:14px;
+    padding:11px 2px;
+    text-decoration:none;
+    color:var(--ink);
+    font-weight:500;
+    font-size:0.98rem;
+  }
+  .agenda-list a:hover .num{filter:brightness(1.08);}
+  .num{
+    flex:none;
+    width:34px; height:34px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:0.82rem;
+    color:#fff;
+  }
+  .agenda-list .sub{color:var(--text-muted); font-weight:400; font-size:0.88rem; margin-left:auto; padding-left:12px; text-align:right; font-family:'IBM Plex Mono',monospace;}
+
+  /* ---------- sections ---------- */
+  section.lesson{display:flex; flex-direction:column; gap:16px; scroll-margin-top:18px;}
+  .section-head{display:flex; align-items:flex-start; gap:14px;}
+  .section-head .num{width:40px; height:40px; font-size:0.95rem; flex:none;}
+  .section-head h2{font-size:1.5rem; font-weight:700; padding-top:4px;}
+  .lesson-body{padding-left:54px; display:flex; flex-direction:column; gap:16px;}
+  .lesson-body p{max-width:66ch; margin:0;}
+  .lesson-body p.lead{font-size:1.02rem;}
+  @media (max-width:600px){
+    .lesson-body{padding-left:0;}
+    .agenda-list a{flex-wrap:wrap; row-gap:2px;}
+    .agenda-list .sub{flex:1 0 100%; margin-left:48px; padding-left:0; text-align:left;}
+  }
+
+  code, .mono{font-family:'IBM Plex Mono', monospace;}
+  .as-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    background:var(--accent-soft);
+    color:var(--accent);
+    padding:1px 6px;
+    border-radius:5px;
+    font-size:0.92em;
+  }
+
+  /* ---------- worked example callouts ---------- */
+  .worked{
+    border:1px solid var(--border);
+    border-left:4px solid var(--accent-2);
+    background:var(--surface);
+    border-radius:0 12px 12px 0;
+    padding:16px 18px;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .worked .label{
+    font-family:'Outfit',sans-serif;
+    font-weight:700;
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--accent-2);
+  }
+  .worked p{max-width:none;}
+  .worked.alt{border-left-color:var(--accent);}
+  .worked.alt .label{color:var(--accent);}
+
+  /* ---------- terminal / code panels ---------- */
+  .term{
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    background:var(--surface-2);
+  }
+  .term-bar{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.74rem;
+    color:var(--text-muted);
+    padding:7px 14px;
+    border-bottom:1px solid var(--border);
+    display:flex; justify-content:space-between; gap:10px;
+  }
+  .term pre{
+    margin:0;
+    padding:14px 16px;
+    overflow-x:auto;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem;
+    line-height:1.6;
+    color:var(--ink);
+  }
+  .term pre .c{color:var(--text-muted);}
+  .term pre .k{color:var(--good);}
+  .term pre .v{color:var(--info);}
+  .term pre .w{color:var(--warn);}
+
+  /* ---------- topology diagram ---------- */
+  .diagram{
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:var(--surface);
+    padding:22px;
+    overflow-x:auto;
+  }
+  .diagram-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:640px;
+  }
+  .node{
+    flex:1;
+    border-radius:12px;
+    padding:14px 16px;
+    background:var(--surface);
+    box-shadow:var(--shadow);
+    display:flex; flex-direction:column; gap:3px;
+    position:relative;
+  }
+  .node .role{font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:700;}
+  .node .node-as{font-size:1.05rem; font-weight:700;}
+  .node .node-name{font-size:0.84rem; color:var(--text-muted); font-weight:500;}
+  .node.origin{border:2px solid var(--hue1); }
+  .node.origin .role{color:var(--hue1);}
+  .node.transit{border:2px solid var(--hue2);}
+  .node.transit .role{color:var(--hue2);}
+  .node.rest{border:2px dashed var(--border); box-shadow:none;}
+  .node.rest .role{color:var(--text-muted);}
+  .connector{flex:none; display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--text-muted);}
+  .connector svg{display:block;}
+  .connector .clabel{font-family:'IBM Plex Mono',monospace; font-size:0.68rem;}
+  .diagram-cap{font-size:0.85rem; color:var(--text-muted); margin-top:14px; max-width:70ch;}
+
+  .paths-list{
+    display:flex; flex-direction:column; gap:0;
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .paths-list .prow{
+    display:flex; gap:14px; align-items:baseline;
+    padding:9px 14px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.84rem;
+    border-top:1px solid var(--border);
+    background:var(--surface);
+  }
+  .paths-list .prow:first-child{border-top:none;}
+  .paths-list .prow .loc{color:var(--text-muted); flex:none; width:130px; font-family:'Outfit',sans-serif; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em;}
+  .paths-list .prow .path .hop{padding:1px 4px;border-radius:4px;}
+  .paths-list .prow .path .origin-hop{background:var(--hue1-soft); color:var(--hue1); font-weight:700;}
+  .paths-list .prow .path .up-hop{background:var(--hue2-soft); color:var(--hue2); font-weight:600;}
+
+  /* ---------- tables ---------- */
+  .tbl-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px;}
+  table{width:100%; border-collapse:collapse; font-size:0.92rem; min-width:480px;}
+  th,td{text-align:left; padding:10px 14px; border-top:1px solid var(--border);}
+  thead th{
+    font-family:'Outfit',sans-serif; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--text-muted); border-top:none; background:var(--surface-2);
+  }
+  tbody tr{background:var(--surface);}
+  td.mono, th.mono{font-family:'IBM Plex Mono',monospace;}
+
+  .chip{
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:0.74rem; font-weight:600;
+    padding:3px 9px; border-radius:99px;
+  }
+  .chip.good{background:var(--good-soft); color:var(--good);}
+  .chip.warn{background:var(--warn-soft); color:var(--warn);}
+  .chip.bad{background:var(--bad-soft); color:var(--bad);}
+  .chip.info{background:var(--info-soft); color:var(--info);}
+  .chip.mute{background:var(--surface-2); color:var(--text-muted); border:1px solid var(--border);}
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top:1px solid var(--border);
+    padding-top:22px;
+    display:flex; flex-direction:column; gap:6px;
+    font-size:0.82rem; color:var(--text-muted);
+  }
+  footer a{color:var(--accent);}
+
+  ul.plain{margin:0; padding-left:1.2em; display:flex; flex-direction:column; gap:6px; max-width:66ch;}
+  ul.plain li{max-width:none;}
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="kicker">BGP explorer &middot; live data</p>
+    <h1>AS9426 Explorer</h1>
+    <p class="dek">A live routing snapshot of <b>AS9426</b> (WESTPAC-AS-AP - Westpac Bank): the prefixes it originates, who it connects to, live AS-paths, RPKI status, and its declared routing policy &mdash; pulled fresh from public BGP/whois data sources on every run.</p>
+    <div class="meta-row">
+      <span class="meta-tag"><b>AS9426</b> &middot; WESTPAC-AS-AP - Westpac Bank</span>
+      <span class="meta-tag">Prefixes: <b>44</b></span>
+      <span class="meta-tag"><b>Multi-homed &middot; 3 upstreams</b></span>
+      <span class="meta-tag">Snapshot: <b>2026-09-30</b></span>
+    </div>
+  </header>
+
+  <div class="highlights">
+      <h2>Notable this run</h2>
+      <div class="finding"><span class="chip warn">RPKI</span><span>1 of 12 checked prefixes have no ROA on file (section 04)</span></div>
+      <div class="finding"><span class="chip warn">IRR</span><span>1 live neighbour isn't named in declared policy (section 05)</span></div>
+      <div class="finding"><span class="chip info">as2rel</span><span>Independent data corroborates it: 44.7% of vantage points see the AS9426&ndash;AS32787 link (section 08)</span></div>
+      <div class="finding"><span class="chip good">MOAS</span><span>No multi-origin announcements detected</span></div>
+      <div class="finding"><span class="chip mute">IPv6</span><span>No IPv6 prefixes announced</span></div>
+    </div>
+
+  <nav class="agenda" aria-label="Table of contents">
+    <h2>Sections</h2>
+    <ol class="agenda-list">
+      <li><a href="#overview"><span class="num" style="background:var(--hue1)">01</span>AS overview &amp; prefixes<span class="sub">who, what, how many</span></a></li>
+      <li><a href="#neighbours"><span class="num" style="background:var(--hue2)">02</span>Neighbours &amp; topology<span class="sub">upstreams / peers / downstreams</span></a></li>
+      <li><a href="#paths"><span class="num" style="background:var(--hue3)">03</span>Live AS-paths<span class="sub">captured from RIS</span></a></li>
+      <li><a href="#rpki"><span class="num" style="background:var(--hue4)">04</span>RPKI validation<span class="sub">origin authentication</span></a></li>
+      <li><a href="#irr"><span class="num" style="background:var(--hue1)">05</span>IRR declared policy<span class="sub">whois route / aut-num</span></a></li>
+      <li><a href="#moas"><span class="num" style="background:var(--hue2)">06</span>MOAS check<span class="sub">multi-origin detection</span></a></li>
+      <li><a href="#rank"><span class="num" style="background:var(--hue3)">07</span>CAIDA ASRank &amp; PeeringDB<span class="sub">third-party registries</span></a></li>
+      <li><a href="#relationships"><span class="num" style="background:var(--hue4)">08</span>Relationship &amp; leak protection<span class="sub">as2rel, ASPA</span></a></li>
+      <li><a href="#live"><span class="num" style="background:var(--hue1)">09</span>Live capture<span class="sub">RIPE RIS Live, right now</span></a></li>
+      <li><a href="#toolkit"><span class="num" style="background:var(--hue2)">10</span>Toolkit<span class="sub">run these yourself</span></a></li>
+    </ol>
+  </nav>
+
+  <!-- 01 -->
+  <section class="lesson" id="overview">
+    <div class="section-head"><span class="num" style="background:var(--hue1)">01</span><h2>AS overview &amp; prefixes</h2></div>
+    <div class="lesson-body">
+      <p class="lead">AS9426 (WESTPAC-AS-AP - Westpac Bank) is currently announcing <b>44</b> prefixes (44 IPv4, 0 IPv6) as seen by RIPE RIS route collectors.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th class="mono">Prefix</th><th>Size</th><th>RPKI</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">166.120.7.0/24</td><td>256 addresses</td><td><span class="chip good">valid</span></td></tr>
+            <tr><td class="mono">166.120.203.0/24</td><td>256 addresses</td><td><span class="chip good">valid</span></td></tr>
+            <tr><td class="mono">110.5.85.0/24</td><td>256 addresses</td><td><span class="chip good">valid</span></td></tr>
+            <tr><td class="mono">203.16.39.0/24</td><td>256 addresses</td><td><span class="chip good">valid</span></td></tr>
+            <tr><td class="mono">166.120.164.0/22</td><td>1,024 addresses</td><td><span class="chip good">valid</span></td></tr>
+            <tr><td class="mono">203.24.4.0/22</td><td>1,024 addresses</td><td><span class="chip good">valid</span></td></tr>
+            <tr><td class="mono">110.5.84.0/22</td><td>1,024 addresses</td><td><span class="chip good">valid</span></td></tr>
+            <tr><td class="mono">166.120.1.0/24</td><td>256 addresses</td><td><span class="chip good">valid</span></td></tr>
+            <tr><td class="mono">110.5.86.0/24</td><td>256 addresses</td><td><span class="chip good">valid</span></td></tr>
+            <tr><td class="mono">166.120.4.0/22</td><td>1,024 addresses</td><td><span class="chip warn">no ROA</span></td></tr>
+            <tr><td class="mono">166.120.165.0/24</td><td>256 addresses</td><td><span class="chip good">valid</span></td></tr>
+            <tr><td class="mono">110.5.90.0/23</td><td>512 addresses</td><td><span class="chip good">valid</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:0.85rem;color:var(--text-muted);margin-top:-6px;">Showing 12 of 44 announced prefixes (the same sample checked against RPKI above).</p>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="lesson" id="neighbours">
+    <div class="section-head"><span class="num" style="background:var(--hue2)">02</span><h2>Neighbours &amp; topology</h2></div>
+    <div class="lesson-body">
+      <p class="lead">AS9426 has <b>3</b> total neighbours inferred from live AS-path data: <b>3</b> upstream-like ("left") and <b>0</b> downstream-like ("right"). With 3 upstream links, this AS looks multi-homed: it connects upstream through <span class="as-tag">AS7474</span> (OPTUSCOM-AS01-AU - SingTel Optus Pty Ltd), <span class="as-tag">AS32787</span> (PROLEXIC-TECHNOLOGIES-DDOS-MITIGATION-NETWORK - Akamai Technologies, Inc.), <span class="as-tag">AS1221</span> (ASN-TELSTRA - Telstra Limited).</p>
+      <div class="diagram">
+        <div class="diagram-row" style="align-items:stretch;">
+          <div class="node transit" style="justify-content:center; flex:0 0 190px;"><span class="role">Multi-homed, no customers seen</span><span class="node-as">AS9426</span><span class="node-name">WESTPAC-AS-AP - Westpac Bank</span></div>
+          <div style="display:flex; flex-direction:column; gap:10px; flex:1;">
+            <div style="display:flex; align-items:center; gap:10px;"><svg width="34" height="16" viewBox="0 0 34 16" style="flex:none; color:var(--hue1);"><line x1="0" y1="8" x2="26" y2="8" stroke="currentColor" stroke-width="2"/><polygon points="26,3 34,8 26,13" fill="currentColor"/></svg><div class="node" style="border:2px solid var(--hue1); flex:1;"><span class="role" style="color:var(--hue1);">Upstream-like &middot; power 279</span><span class="node-as">AS7474</span><span class="node-name">OPTUSCOM-AS01-AU - SingTel Optus Pty Ltd</span></div></div>
+            <div style="display:flex; align-items:center; gap:10px;"><svg width="34" height="16" viewBox="0 0 34 16" style="flex:none; color:var(--hue2);"><line x1="0" y1="8" x2="26" y2="8" stroke="currentColor" stroke-width="2"/><polygon points="26,3 34,8 26,13" fill="currentColor"/></svg><div class="node" style="border:2px solid var(--hue2); flex:1;"><span class="role" style="color:var(--hue2);">Upstream-like &middot; power 269</span><span class="node-as">AS32787</span><span class="node-name">PROLEXIC-TECHNOLOGIES-DDOS-MITIGATION-NETWORK - Akamai Technologies, Inc.</span></div></div>
+            <div style="display:flex; align-items:center; gap:10px;"><svg width="34" height="16" viewBox="0 0 34 16" style="flex:none; color:var(--hue3);"><line x1="0" y1="8" x2="26" y2="8" stroke="currentColor" stroke-width="2"/><polygon points="26,3 34,8 26,13" fill="currentColor"/></svg><div class="node" style="border:2px solid var(--hue3); flex:1;"><span class="role" style="color:var(--hue3);">Upstream-like &middot; power 51</span><span class="node-as">AS1221</span><span class="node-name">ASN-TELSTRA - Telstra Limited</span></div></div>
+          </div>
+        </div>
+        <p class="diagram-cap">Top 3 neighbours of AS9426 by RIS path weight ("power") &mdash; each an independent link to AS9426, not to each other. "Power" measures how many route-collector peers observe that edge, not link capacity.</p>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th class="mono">Neighbour</th><th>Holder</th><th>Direction</th><th>Power</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">AS7474</td><td>OPTUSCOM-AS01-AU - SingTel Optus Pty Ltd</td><td>upstream-like</td><td class="mono">279</td></tr>
+            <tr><td class="mono">AS32787</td><td>PROLEXIC-TECHNOLOGIES-DDOS-MITIGATION-NETWORK - Akamai Technologies, Inc.</td><td>upstream-like</td><td class="mono">269</td></tr>
+            <tr><td class="mono">AS1221</td><td>ASN-TELSTRA - Telstra Limited</td><td>upstream-like</td><td class="mono">51</td></tr>
+          </tbody>
+        </table>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="lesson" id="paths">
+    <div class="section-head"><span class="num" style="background:var(--hue3)">03</span><h2>Live AS-paths</h2></div>
+    <div class="lesson-body">
+      <p class="lead">These 5 paths were captured live by RIPE RIS route collectors (London, United Kingdom), for the prefix <span class="as-tag">166.120.7.0/24</span>:<br><span style="font-size:0.85rem;font-weight:400;color:var(--text-muted);">A single-prefix sample &mdash; every path transiting the same neighbour here reflects that narrow sample, not necessarily the AS's only active upstream link (see section 02's full neighbour list).</span></p>
+      <div class="paths-list">
+        <div class="prow"><span class="loc">London, United Kingdom</span><span class="path">15692 <span class="hop up-hop">32787</span> <span class="hop origin-hop">9426</span></span></div>
+        <div class="prow"><span class="loc">London, United Kingdom</span><span class="path">8218 <span class="hop up-hop">32787</span> <span class="hop origin-hop">9426</span></span></div>
+        <div class="prow"><span class="loc">London, United Kingdom</span><span class="path">36924 1299 <span class="hop up-hop">32787</span> <span class="hop origin-hop">9426</span></span></div>
+        <div class="prow"><span class="loc">London, United Kingdom</span><span class="path">48070 <span class="hop up-hop">32787</span> <span class="hop origin-hop">9426</span></span></div>
+        <div class="prow"><span class="loc">London, United Kingdom</span><span class="path">6894 <span class="hop up-hop">32787</span> <span class="hop origin-hop">9426</span></span></div>
+      </div>
+      <div class="tbl-wrap" style="margin-top:4px;">
+        <table>
+          <thead><tr><th class="mono">ASN</th><th>Holder</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">AS15692</td><td>RAZORBLUE Razorblue Ltd</td></tr>
+            <tr><td class="mono">AS8218</td><td>NEO-ASN Zayo Infrastructure France SA</td></tr>
+            <tr><td class="mono">AS36924</td><td>GVA Cote d'Ivoire SAS - GVA Cote d'Ivoire SAS</td></tr>
+            <tr><td class="mono">AS1299</td><td>TWELVE99 Arelion Sweden AB</td></tr>
+            <tr><td class="mono">AS48070</td><td>DSM DSM (GB) Limited</td></tr>
+            <tr><td class="mono">AS6894</td><td>KDDI-EUROPE KDDI Europe Ltd</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="lesson" id="rpki">
+    <div class="section-head"><span class="num" style="background:var(--hue4)">04</span><h2>RPKI validation</h2></div>
+    <div class="lesson-body">
+      <div class="worked">
+        <span class="label">Origin validation</span>
+        <p>11 of 12 checked prefixes (sampled 12 of 44) are <span class="chip good">valid</span>. <span class="as-tag">166.120.4.0/22</span> comes back <span class="chip warn">no ROA</span> &mdash; not itself alarming (most of the Internet still has no ROA), just zero cryptographic protection for that one prefix. <code class="mono">"validating_roas": []</code>.</p>
+      </div>
+      <div class="term">
+        <div class="term-bar"><span>GET stat.ripe.net/data/rpki-validation/data.json?resource=AS9426&amp;prefix=&hellip;</span><span>RIPEstat API</span></div>
+        <pre><span class="c">{</span>
+  <span class="k">"status"</span>: <span class="w">"unknown"</span>,
+  <span class="k">"validating_roas"</span>: []
+<span class="c">}</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="lesson" id="irr">
+    <div class="section-head"><span class="num" style="background:var(--hue1)">05</span><h2>IRR declared routing policy</h2></div>
+    <div class="lesson-body">
+      <p class="lead">AS9426's <code class="mono">aut-num</code> object references 2 neighbour ASes, and every one of them shows up in live AS-path data too. The other direction tells a different story: 1 live neighbour RIS actually observes for AS9426 isn't named in this policy object at all: AS32787 (PROLEXIC-TECHNOLOGIES-DDOS-MITIGATION-NETWORK - Akamai Technologies, Inc.) &mdash; either an undocumented relationship, or policy that predates it (last modified 2021-01-15T01:45:02Z).</p>
+      <div class="term">
+        <div class="term-bar"><span class="mono">$ whois -h whois.radb.net -- "-i origin AS9426"</span><span>route objects</span></div>
+        <pre><span class="c">% Information related to '14.200.136.128/28AS9426'</span>
+
+<span class="k">route:</span>          14.200.136.128/28
+<span class="k">origin:</span>         AS9426
+<span class="c">descr:          Proxy route object registered by AS2764</span>
+<span class="k">mnt-by:</span>         MAINT-AS2764
+<span class="k">source:</span>         RADB
+
+<span class="c">&hellip; 211 more route object(s) follow the same pattern for
+    14.200.136.144/28, 14.203.141.160/27, 14.203.141.160/28, 14.203.141.176/28, 110.5.80.0/21, 110.5.80.0/21, 110.5.80.0/22, 110.5.80.0/23, 110.5.80.0/23, and 202 more &hellip;</span></pre>
+      </div>
+      <div class="term">
+        <div class="term-bar"><span class="mono">$ whois -h whois.radb.net -- "-T aut-num AS9426"</span><span>policy object</span></div>
+        <pre><span class="k">aut-num:</span>        AS9426
+<span class="k">as-name:</span>        WESTPAC-AS-AP
+<span class="k">import:</span>         from AS1221 action pref=100; accept ANY
+<span class="k">import:</span>         from AS7474 action pref=10; accept ANY
+<span class="k">export:</span>         to AS1221 announce AS9426
+<span class="k">export:</span>         to AS7474 announce AS9426
+<span class="k">mnt-by:</span>         APNIC-HM
+<span class="w">last-modified:  2021-01-15T01:45:02Z</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section class="lesson" id="moas">
+    <div class="section-head"><span class="num" style="background:var(--hue2)">06</span><h2>MOAS check</h2></div>
+    <div class="lesson-body">
+      <div class="worked">
+        <span class="label">Multi-origin AS detection</span>
+        <p>Checked 8 of 44 prefixes (<span class="as-tag">166.120.7.0/24</span>, <span class="as-tag">166.120.203.0/24</span>, <span class="as-tag">110.5.85.0/24</span>, <span class="as-tag">203.16.39.0/24</span>, <span class="as-tag">166.120.164.0/22</span>, <span class="as-tag">203.24.4.0/22</span>, <span class="as-tag">110.5.84.0/22</span>, <span class="as-tag">166.120.1.0/24</span>) against RIPEstat's routing-status: each one has exactly one origin AS. No MOAS today.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section class="lesson" id="rank">
+    <div class="section-head"><span class="num" style="background:var(--hue3)">07</span><h2>CAIDA ASRank &amp; PeeringDB</h2></div>
+    <div class="lesson-body">
+      <div class="worked">
+        <span class="label">CAIDA ASRank</span>
+        <p>CAIDA ASRank lists AS9426 as <b>WESTPAC-AS-AP</b> (unknown organization), globally ranked <b>#15655</b> by customer cone size. Inferred degree: 3 providers, 0 peers, 0 customers. Customer cone: 1 ASes, 51 prefixes. That figure differs from RIPEstat's live count above (44) &mdash; different sources, different measurement windows, not a discrepancy to read anything into on its own.</p>
+      </div>
+      <div class="worked alt">
+        <span class="label">PeeringDB</span>
+        <p>PeeringDB has a record for <b>Westpac Bank</b> (no alias): network type "unspecified", peering policy "Open". No public IX presence is listed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 -->
+  <section class="lesson" id="relationships">
+    <div class="section-head"><span class="num" style="background:var(--hue4)">08</span><h2>Relationship &amp; leak protection</h2></div>
+    <div class="lesson-body">
+      <div class="worked">
+        <span class="label">Second opinion &mdash; BGPKIT's as2rel</span>
+        <p>BGPKIT's independent <code class="mono">as2rel</code> dataset puts a number on the AS9426&ndash;AS32787 link &mdash; chosen because section 05 flagged it as live but missing from declared policy: <b>44.7%</b> of vantage points see it at all, and among those, <b>0.0%</b> classify AS9426 as the provider, <b>40.0%</b> as settlement-free peers, and <b>4.6%</b> the reverse.</p>
+      </div>
+      <div class="worked alt">
+        <span class="label">ASPA adoption</span>
+        <p>Querying BGPKIT's cached ASPA (RFC 9582) set: AS9426 has published 0 ASPA records naming its own valid providers, and is itself named as an authorized provider by 0 other ASes.</p>
+      </div>
+      <div class="worked">
+        <span class="label">ASPA vs. aut-num cross-check</span>
+        <p>AS9426 hasn't published any ASPA records naming its own valid providers, so there's nothing yet to cross-check against its aut-num <code class="mono">import:</code> lines.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 -->
+  <section class="lesson" id="live">
+    <div class="section-head"><span class="num" style="background:var(--hue1)">09</span><h2>Live capture</h2></div>
+    <div class="lesson-body">
+      <p class="lead">A bounded capture of real BGP updates from RIPE RIS Live, filtered to any update whose AS-PATH contains AS9426:</p>
+      <div class="term"><div class="term-bar"><span class="mono">$ monocle watch --as-path 9426</span><span>RIPE RIS Live</span></div><pre><span class="c">(skipped this run -- monocle not installed, or --live-watch-seconds 0)</span></pre></div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="lesson" id="toolkit">
+    <div class="section-head"><span class="num" style="background:var(--hue2)">10</span><h2>Toolkit</h2></div>
+    <div class="lesson-body">
+      <p class="lead">Every fact above came from free, public sources &mdash; no account or API key required. Try them on any ASN.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Tool</th><th>Command / URL</th><th>What it tells you</th></tr></thead>
+          <tbody>
+            <tr><td>Route objects</td><td class="mono">whois -h whois.radb.net -- "-i origin ASxxxx"</td><td>Declared prefixes</td></tr>
+            <tr><td>Policy object</td><td class="mono">whois -h whois.radb.net -- "-T aut-num ASxxxx"</td><td>import/export neighbors</td></tr>
+            <tr><td>Neighbors</td><td class="mono">stat.ripe.net/data/asn-neighbours/data.json?resource=ASxxxx</td><td>Who this AS actually talks to, live</td></tr>
+            <tr><td>Prefixes</td><td class="mono">stat.ripe.net/data/announced-prefixes/data.json?resource=ASxxxx</td><td>IPv4 + IPv6 announcements</td></tr>
+            <tr><td>RPKI check</td><td class="mono">stat.ripe.net/data/rpki-validation/data.json?resource=ASxxxx&amp;prefix=a.b.c.d/n</td><td>valid / invalid / unknown, and why</td></tr>
+            <tr><td>MOAS check</td><td class="mono">stat.ripe.net/data/routing-status/data.json?resource=a.b.c.d/n</td><td>All current origin ASes for a prefix</td></tr>
+            <tr><td>Global rank</td><td>CAIDA ASRank (asrank.caida.org)</td><td>Customer cone size, degree, rough size/influence</td></tr>
+            <tr><td>Peering footprint</td><td>PeeringDB (peeringdb.com)</td><td>Which exchange points a network is at</td></tr>
+            <tr><td>Unified CLI</td><td class="mono">monocle inspect ASxxxx</td><td>ASInfo + prefixes + RPKI + relationships in one lookup (BGPKIT, <code class="mono">brew install bgpkit/tap/monocle</code>)</td></tr>
+            <tr><td>Relationship inference</td><td class="mono">monocle as2rel ASxxxx ASyyyy</td><td>Independent provider/peer/customer inference, with confidence %</td></tr>
+            <tr><td>ASPA lookup</td><td class="mono">monocle rpki aspas --customer ASxxxx</td><td>Which providers an AS has authorized (leak protection)</td></tr>
+            <tr><td>Live stream</td><td class="mono">monocle watch --as-path ASxxxx</td><td>Real-time BGP updates from RIPE RIS Live as they happen</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="worked">
+        <span class="label">Note on this run</span>
+        <p>BGPKIT's monocle CLI was installed and queried live for this run.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Live BGP/whois/RPKI data captured 2026-09-30 from RIPE RIS, RIPEstat, RADb/APNIC WHOIS, and CAIDA ASRank.</span>
+    <span>This page is generated, not hand-written: <code class="mono">uv run bgp_explorer.py 9426</code> renders it from <code class="mono">explorer_template.html</code> plus live data on every run (<code class="mono">--self-test</code> runs its offline regression checks; <code class="mono">--cache-ttl</code> reuses recent fetches).</span>
+    <span>Generated for informational/educational purposes &mdash; not operational guidance for AS9426's actual network operators.</span>
+  </footer>
+
+</div>
